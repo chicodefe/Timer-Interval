@@ -26,7 +26,7 @@
 // Connections to LCD display
 
 //Pantalla
-U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* CS=*/ 10, /* reset=*/ 8);
+U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/ 12, /* data=*/ 11, /* CS=*/ 10, /* reset=*/ 7);
 
 //Variables
 int ledState = LOW;// ledState used to set the LED
@@ -138,6 +138,7 @@ void loop()// the loop function runs over and over again until power down or res
 		if (Activo >= 0) {
 			Serial.print("Activo");
 			Serial.println("");
+			digitalWrite(Relay1, HIGH);
 			Spray();
 		}
 		else {
@@ -151,6 +152,7 @@ void loop()// the loop function runs over and over again until power down or res
 		if (Inactivo >= 0) {
 			Serial.print("Inactivo");
 			Serial.println("");
+			digitalWrite(Relay1, LOW);
 			Spray();
 		}
 		else {
@@ -260,7 +262,7 @@ void loop()// the loop function runs over and over again until power down or res
 	
 
 	PreviousMillis = millis();
-	delay(100);
+	delay(1000);
 
 }
 
