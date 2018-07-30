@@ -26,7 +26,7 @@
 // Connections to LCD display
 
 //Pantalla
-U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/ 12, /* data=*/ 11, /* CS=*/ 10, /* reset=*/ 7);
+U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R0, /* clock=*/ 12, /* data=*/ 11, /* CS=*/ 10, /* reset=*/ 9);
 
 //Variables
 int ledState = LOW;// ledState used to set the LED
@@ -231,11 +231,11 @@ void loop()// the loop function runs over and over again until power down or res
 
 		u8g2.drawStr(0, 45, "Activo:");
 		u8g2.setCursor(80, 45);
-		u8g2.print(Activo / 1000 );
+		u8g2.print(Interval / 1000 );
 
 		u8g2.drawStr(0, 60, "Inactivo:");
 		u8g2.setCursor(80, 60);
-		u8g2.print(Inactivo / 1000 );
+		u8g2.print(Cycle - Interval / 1000 );
 
 	} while (u8g2.nextPage());
 
