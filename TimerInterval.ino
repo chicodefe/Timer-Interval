@@ -49,11 +49,8 @@ int EEPROM_INTERVAL_ADDRESS = 1;
 
 // These set how much the interval changes when you press the up and down buttons
 // Values in milliseconds
-//long IntervalSteps = 300000;
-//long TimerSteps = 300000;
-
-long IntervalSteps = 30000;
-long TimerSteps = 30000;
+long IntervalSteps = 300000;
+long TimerSteps = 300000;
 
 // If you hold down the up or down buttons, the interval will count up or down until you let go
 // This sets the pause time between changes as you hold doun the button. Value in millisaconds.
@@ -88,20 +85,22 @@ void setup()// the setup function runs once when you press reset or power the bo
 
 	// Enable this code and push program once on the first run of a new board or to move EEPROM registers.
 	  // Then disable and push the program to the board again for normal operation.
-	EEPROM.write(EEPROM_CYCLE_ADDRESS,3);
-	EEPROM.write(EEPROM_INTERVAL_ADDRESS, 1);
-
-
-	  // This grabs the stored intervals from the EEPROM cache on startup
+	if (EEPROM.read(EEPROM_CYCLE_ADDRESS == 0xFF))
+	{
+		EEPROM.write(EEPROM_CYCLE_ADDRESS, 60);
+	}
+	if (EEPROM.read(EEPROM_INTERVAL_ADDRESS == 0xFF))
+	{
+		EEPROM.write(EEPROM_INTERVAL_ADDRESS, 0);
+	}
+	// This grabs the stored intervals from the EEPROM cache on startup
 	Cycle = EEPROM.read(EEPROM_CYCLE_ADDRESS) * 60000;
 	Interval = EEPROM.read(EEPROM_INTERVAL_ADDRESS) * 60000;
-
 
 	Status = 1;
 
 	// Iniciando el Timer con el valor del intervalo guadado
 	Timer = Interval;
-
 
 	// Initilize last Interval time buffer, set it to right now.
 	Activo = Interval;
@@ -131,7 +130,6 @@ void loop()// the loop function runs over and over again until power down or res
 
 	//Asignar el tiempo desde transcurrido
 	IntervalMillis = CurrentMillis - PreviousMillis;
-	
 
 	if (Status == 1) {
 		Activo = Activo - IntervalMillis;
@@ -140,7 +138,7 @@ void loop()// the loop function runs over and over again until power down or res
 			Serial.println("");
 			digitalWrite(Relay1, HIGH);
 			Spray();
-		}
+		  }
 		else {
 			Status = 0;
 			Activo = Interval;
@@ -209,7 +207,7 @@ void loop()// the loop function runs over and over again until power down or res
 		if (Status == 1) {
 			u8g2.setFont(u8g2_font_profont15_tf);// choose a suitable font
 			u8g2.drawStr(0, 14, "Activo:");
-			u8g2.setCursor(80, 14);
+			u8g2.setCursor(70, 14);
 			u8g2.print(Activo / 1000 / 60);
 			u8g2.print(":");
 			u8g2.print(Activo / 1000);
@@ -217,7 +215,7 @@ void loop()// the loop function runs over and over again until power down or res
 		else {
 			u8g2.setFont(u8g2_font_profont15_tf);// choose a suitable font
 			u8g2.drawStr(0, 14, "Inactivo:");
-			u8g2.setCursor(80, 14);
+			u8g2.setCursor(70, 14);
 			u8g2.print(Inactivo / 1000 / 60);
 			u8g2.print(":");
 			u8g2.print(Inactivo / 1000);
@@ -227,15 +225,15 @@ void loop()// the loop function runs over and over again until power down or res
 		u8g2.setFont(u8g2_font_profont15_tf);// choose a suitable font
 		u8g2.drawStr(0, 30, "Timer:");
 		u8g2.setCursor(80, 30);
-		u8g2.print(Timer / 1000 );
+		u8g2.print(Timer / 1000 / 60);
 
 		u8g2.drawStr(0, 45, "Activo:");
 		u8g2.setCursor(80, 45);
-		u8g2.print(Interval / 1000 );
+		u8g2.print(Interval / 1000 / 60);
 
 		u8g2.drawStr(0, 60, "Inactivo:");
 		u8g2.setCursor(80, 60);
-		u8g2.print(Cycle - Interval / 1000 );
+		u8g2.print((Cycle - Interval) / 1000 / 60);
 
 	} while (u8g2.nextPage());
 
@@ -259,10 +257,10 @@ void loop()// the loop function runs over and over again until power down or res
 
 
 
-	
+
 
 	PreviousMillis = millis();
-	delay(1000);
+	delay(100);
 
 }
 
@@ -310,7 +308,7 @@ void Spray(void) {
 void IntervalUp(void) {
 	if (Interval < Cycle) {
 		if (IntervalUpBuffer + ButtonPressWait < millis()) {
-			Interval = Interval+IntervalSteps;
+			Interval = Interval + IntervalSteps;
 			EEPROM.write(EEPROM_INTERVAL_ADDRESS, Interval / 60000);
 			Activo = Interval;
 			Inactivo = Cycle - Interval;
@@ -324,7 +322,7 @@ void IntervalUp(void) {
 void IntervalDown(void) {
 	if (Interval > 0) {
 		if (IntervalDownBuffer + ButtonPressWait < millis()) {
-			Interval = Interval- IntervalSteps;
+			Interval = Interval - IntervalSteps;
 			EEPROM.write(EEPROM_INTERVAL_ADDRESS, Interval / 60000);
 			Activo = Interval;
 			Inactivo = Cycle - Interval;
