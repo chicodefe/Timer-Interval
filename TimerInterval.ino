@@ -1,7 +1,7 @@
 /*
   Name:		TimerInterval.ino
   Created:	7/22/2018 1:16:07 PM
-  Author:	Chicodefe
+  Author:	ChicoDeFe
 */
 
 /* Timer Interval
@@ -138,7 +138,7 @@ void loop()// the loop function runs over and over again until power down or res
 			Serial.println("");
 			digitalWrite(Relay1, HIGH);
 			Spray();
-		  }
+		}
 		else {
 			Status = 0;
 			Activo = Interval;
